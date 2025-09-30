@@ -1,0 +1,34 @@
+{
+  "name": "public-transport-frontend",
+  "version": "1.0.0",
+  "description": "A public transport information tool for administrators and end users.",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "axios": "^0.21.1",
+    "socket.io-client": "^4.0.0",
+    "react-router-dom": "^5.2.0",
+    "leaflet": "^1.7.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.2",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "@types/react-router-dom": "^5.1.7"
+  },
+  "keywords": [
+    "public transport",
+    "real-time information",
+    "admin tools"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
