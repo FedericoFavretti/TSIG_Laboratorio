@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 
-const FilterPanel = ({ onFilterChange }) => {
+// Tipado de las props
+interface FilterPanelProps {
+    onFilterChange: (line: string, stop: string) => void;
+}
+
+const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange }) => {
     const [lineFilter, setLineFilter] = useState('');
     const [stopFilter, setStopFilter] = useState('');
 
-    const handleLineFilterChange = (event) => {
+    const handleLineFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLineFilter(event.target.value);
         onFilterChange(event.target.value, stopFilter);
     };
 
-    const handleStopFilterChange = (event) => {
+    const handleStopFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setStopFilter(event.target.value);
         onFilterChange(lineFilter, event.target.value);
     };
