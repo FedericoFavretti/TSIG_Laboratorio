@@ -5,6 +5,19 @@ export interface Route {
   details: string;
 }
 
+export interface MapFilters {
+    companies: string[];
+    activeOnly: boolean;
+    showDisabled: boolean;
+    timeRange: { start: string; end: string };
+    searchRadius: number;
+}
+
+export interface TimeRange {
+    start: string;
+    end: string;
+}
+
 export interface Stop {
   id: string;
   name: string;
