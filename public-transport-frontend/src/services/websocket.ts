@@ -1,26 +1,17 @@
-// services/websocket.ts
-// Define tipos para los mensajes WebSocket
-export interface WebSocketMessage {
-  type: string;
-  payload: any;
-  timestamp?: Date;
-}
-
-export interface TransportNotification {
-  id: string;
-  type: 'route_change' | 'stop_disabled' | 'schedule_update' | 'line_update';
-  title: string;
-  message: string;
-  entityId: string;
-  entityType: 'route' | 'stop' | 'line' | 'schedule';
-  timestamp: Date;
-}
+import { TransportNotification, WebSocketMessage } from '../types';
 
 class TransportWebSocket {
-  private socket: WebSocket | null = null;
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectInterval = 3000;
+  private socket: WebSocket | null;
+  private reconnectAttempts: number;
+  private readonly maxReconnectAttempts: number;
+  private readonly reconnectInterval: number;
+
+  constructor() {
+    this.socket = null;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+    this.reconnectInterval = 3000;
+  }
 
   connect(url: string, onMessage: (message: TransportNotification) => void): void {
     try {
@@ -103,10 +94,8 @@ class TransportWebSocket {
   }
 }
 
-// Exportar una instancia singleton
 export const transportWebSocket = new TransportWebSocket();
 
-// Funciones de utilidad para tipos específicos de mensajes
 export const createRouteUpdateMessage = (routeId: string, changes: any): WebSocketMessage => ({
   type: 'route_update',
   payload: { routeId, changes }

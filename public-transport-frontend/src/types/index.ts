@@ -52,6 +52,12 @@ export interface Line {
     stops?: string[]; // IDs de paradas en esta línea
 }
 
+export interface WebSocketMessage {
+  type: string;
+  payload: any;
+  timestamp?: Date;
+}
+
 export interface TransportNotification {
   id: string;
   type: 'route_change' | 'stop_disabled' | 'schedule_update' | 'line_update';
