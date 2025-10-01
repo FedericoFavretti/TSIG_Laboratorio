@@ -1,17 +1,10 @@
 import { TransportNotification, WebSocketMessage } from '../types';
 
 class TransportWebSocket {
-  private socket: WebSocket | null;
-  private reconnectAttempts: number;
-  private readonly maxReconnectAttempts: number;
-  private readonly reconnectInterval: number;
-
-  constructor() {
-    this.socket = null;
-    this.reconnectAttempts = 0;
-    this.maxReconnectAttempts = 5;
-    this.reconnectInterval = 3000;
-  }
+  private socket: WebSocket | null = null;
+  private reconnectAttempts: number = 0;
+  private maxReconnectAttempts: number = 5;
+  private reconnectInterval: number = 3000;
 
   connect(url: string, onMessage: (message: TransportNotification) => void): void {
     try {
@@ -94,8 +87,10 @@ class TransportWebSocket {
   }
 }
 
+// Exportar una instancia singleton
 export const transportWebSocket = new TransportWebSocket();
 
+// Funciones de utilidad para tipos específicos de mensajes
 export const createRouteUpdateMessage = (routeId: string, changes: any): WebSocketMessage => ({
   type: 'route_update',
   payload: { routeId, changes }

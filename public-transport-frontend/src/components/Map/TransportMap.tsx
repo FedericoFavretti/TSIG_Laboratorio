@@ -40,7 +40,15 @@ const TransportMap: React.FC<TransportMapProps> = ({
     const [mapData, setMapData] = useState<{ stops: Stop[]; lines: Line[] }>({ stops: [], lines: [] });
 
     useEffect(() => {
-        if (!mapRef.current) return;
+        // Guardar referencias en variables locales para el closure
+        const currentMapRef = mapRef.current;
+        const currentOverlayRef = overlayRef.current;
+
+        // Verificar que las referencias no sean nulas
+        if (!currentMapRef || !currentOverlayRef) {
+            console.error('Map references are not available');
+            return;
+        }
 
         let map: Map;
 
@@ -53,7 +61,7 @@ const TransportMap: React.FC<TransportMapProps> = ({
                 });
 
                 // Crear features para los stops
-                const stopFeatures = data.stops?.map((stop: any) => {
+                const stopFeatures = (data.stops || []).map((stop: any) => {
                     const feature = new Feature({
                         geometry: new Point(fromLonLat([stop.location.longitude, stop.location.latitude])),
                         name: stop.name,
@@ -73,7 +81,7 @@ const TransportMap: React.FC<TransportMapProps> = ({
                         })
                     );
                     return feature;
-                }) || [];
+                });
 
                 const vectorSource = new VectorSource({
                     features: stopFeatures,
@@ -83,9 +91,9 @@ const TransportMap: React.FC<TransportMapProps> = ({
                     source: vectorSource,
                 });
 
-                // CORRECCIÓN: Esta es la línea problemática - aseguramos que mapRef.current no sea null
+                // Usar las referencias locales (TypeScript sabe que no son null aquí)
                 map = new Map({
-                    target: mapRef.current!,
+                    target: currentMapRef,
                     layers: [
                         new TileLayer({
                             source: new OSM(),
@@ -98,9 +106,9 @@ const TransportMap: React.FC<TransportMapProps> = ({
                     }),
                 });
 
-                // Popup overlay
+                // Popup overlay - usar referencia local
                 const overlay = new Overlay({
-                    element: overlayRef.current!,
+                    element: currentOverlayRef,
                     autoPan: {
                         animation: {
                             duration: 250,
@@ -129,19 +137,15 @@ const TransportMap: React.FC<TransportMapProps> = ({
                         if (geometry instanceof Point) {
                             const featureCoordinates = geometry.getCoordinates();
                             overlay.setPosition(featureCoordinates);
-                            if (overlayRef.current) {
-                                overlayRef.current.innerHTML = `
-                                    <strong>${feature.get('name')}</strong><br/>
-                                    Routes: ${(feature.get('routes') || []).join(', ')}
-                                `;
-                                overlayRef.current.style.display = 'block';
-                            }
+                            currentOverlayRef.innerHTML = `
+                                <strong>${feature.get('name')}</strong><br/>
+                                Routes: ${(feature.get('routes') || []).join(', ')}
+                            `;
+                            currentOverlayRef.style.display = 'block';
                         }
                     } else {
                         overlay.setPosition(undefined);
-                        if (overlayRef.current) {
-                            overlayRef.current.style.display = 'none';
-                        }
+                        currentOverlayRef.style.display = 'none';
                     }
                 });
 
@@ -149,9 +153,7 @@ const TransportMap: React.FC<TransportMapProps> = ({
                     map.on('pointermove', function (e) {
                         const pixel = map.getEventPixel(e.originalEvent);
                         const hit = map.hasFeatureAtPixel(pixel);
-                        if (mapRef.current) {
-                            mapRef.current.style.cursor = hit ? 'pointer' : (isAdmin ? 'crosshair' : '');
-                        }
+                        currentMapRef.style.cursor = hit ? 'pointer' : (isAdmin ? 'crosshair' : '');
                     });
                 }
 
