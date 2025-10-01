@@ -1,7 +1,7 @@
 {
   "name": "public-transport-frontend",
   "version": "1.0.0",
-  "description": "A public transport information tool for administrators and end users.",
+  "description": "Sistema publico de transporte.",
   "main": "src/index.tsx",
   "scripts": {
     "start": "react-scripts start",
@@ -26,7 +26,7 @@
     "@types/react-dom": "^17.0.26",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.7.0",
-    "typescript": "^4.9.5",
+    "typescript": "^5.9.3",
     "vite": "^6.3.6"
   },
   "keywords": [
@@ -34,6 +34,18 @@
     "real-time information",
     "admin tools"
   ],
-  "author": "Your Name",
-  "license": "MIT"
+  "author": "TSIG Grupo 2",
+  "license": "MIT",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
