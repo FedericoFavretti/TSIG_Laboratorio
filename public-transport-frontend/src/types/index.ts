@@ -52,6 +52,17 @@ export interface Line {
     stops?: string[]; // IDs de paradas en esta línea
 }
 
+export interface TransportNotification {
+  id: string;
+  type: 'route_change' | 'stop_disabled' | 'schedule_update' | 'line_update';
+  title: string;
+  message: string;
+  entityId: string;
+  entityType: 'route' | 'stop' | 'line' | 'schedule';
+  timestamp: Date;
+  read?: boolean;
+}
+
 export interface Coordinate {
     lat: number;
     lng: number;
@@ -124,4 +135,23 @@ export interface Notification {
     type: 'line' | 'stop';
     id: string;
   };
+}
+
+// Datos en tiempo real (posición de vehículos, etc.)
+export interface RealTimeVehicle {
+  id: string;
+  line: string;
+  latitude: number;
+  longitude: number;
+  timestamp: Date;
+  speed?: number;
+  direction?: number;
+  nextStop?: string;
+  occupancy?: number;
+}
+
+export interface RealTimeData {
+  vehicles: RealTimeVehicle[];
+  lastUpdated: Date;
+  totalActive: number;
 }

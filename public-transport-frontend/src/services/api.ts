@@ -6,7 +6,9 @@ import {
   Line, 
   LineSearchCriteria, 
   AddressSearchCriteria,
-  IntersectionSearchCriteria 
+  IntersectionSearchCriteria, 
+  RealTimeData, 
+  RealTimeVehicle
 } from '../types';
 
 
@@ -83,3 +85,40 @@ export async function fetchTransportData() {
     const response = await fetch('http://localhost:8080/api/transport');
     return response.json();
 }
+
+export const fetchRealTimeData = async (): Promise<RealTimeData> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/realtime/vehicles`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching real-time data:', error);
+    // Retornar datos de ejemplo si hay error
+    return {
+      vehicles: [],
+      lastUpdated: new Date(),
+      totalActive: 0
+    };
+  }
+};
+
+// Para obtener datos en tiempo real de una línea específica
+export const fetchRealTimeDataByLine = async (lineCode: string): Promise<RealTimeVehicle[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/realtime/vehicles/${lineCode}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching real-time data for line ${lineCode}:`, error);
+    return [];
+  }
+};
+
+// Para obtener datos en tiempo real de una parada específica
+export const fetchRealTimeDataByStop = async (stopId: string): Promise<RealTimeVehicle[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/realtime/stop/${stopId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching real-time data for stop ${stopId}:`, error);
+    return [];
+  }
+};
