@@ -5,7 +5,7 @@ echo "📦 Instalando dependencias del Sistema de Transporte Público..."
 
 # Instalar dependencias del frontend
 echo "🎨 Instalando dependencias del frontend..."
-cd ../public-transport-frontend
+cd ../frontend-public-transport
 npm install
 if [ $? -eq 0 ]; then
     echo "✅ Frontend: Dependencias instaladas"

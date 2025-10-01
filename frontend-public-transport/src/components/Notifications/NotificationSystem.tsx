@@ -3,7 +3,7 @@ import { TransportNotification } from '../../types/index';
 import { transportWebSocket } from '../../services/websocket';
 import NotificationList from './NotificationList';
 
-const WEBSOCKET_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001/ws';
+const WEBSOCKET_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3001/ws';
 
 const NotificationSystem: React.FC = () => {
   const [notifications, setNotifications] = useState<TransportNotification[]>([]);

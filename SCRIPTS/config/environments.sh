@@ -14,5 +14,5 @@ export HAS_BACKEND=false
 export NODE_ENV=development
 
 # URLs
-export REACT_APP_API_BASE_URL="http://localhost:$BACKEND_PORT/api"
-export REACT_APP_WS_URL="ws://localhost:$BACKEND_PORT/ws"
+export VITE_API_BASE_URL="http://localhost:$BACKEND_PORT/api"
+export VITE_WS_URL="ws://localhost:$BACKEND_PORT/ws"

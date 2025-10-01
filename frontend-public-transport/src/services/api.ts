@@ -12,7 +12,7 @@ import {
 } from '../types';
 
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3001/api';
 
 // services/api.ts
 export const lineAPI = {

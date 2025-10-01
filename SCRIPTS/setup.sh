@@ -4,6 +4,7 @@
 echo "⚙️  Configurando sistema de automatización..."
 
 # Crear directorios necesarios
+cd ../SCRIPTS
 mkdir -p logs pids config
 
 # Hacer ejecutables todos los scripts

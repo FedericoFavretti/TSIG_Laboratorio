@@ -1,4 +1,4 @@
-import { TransportNotification, WebSocketMessage } from '../types';
+import { TransportNotification, WebSocketMessage } from '../types/index';
 
 class TransportWebSocket {
   private socket: WebSocket | null = null;

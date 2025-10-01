@@ -52,7 +52,7 @@ fi
 
 # ... resto del código igual
 echo "🎨 Iniciando frontend..."
-cd ../public-transport-frontend
+cd ../frontend-public-transport
 
 # Verificar si el puerto está en uso
 if netstat -tuln | grep ":$FRONTEND_PORT " > /dev/null; then
