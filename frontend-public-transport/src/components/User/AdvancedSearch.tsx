@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LineSearchCriteria, AddressSearchCriteria, IntersectionSearchCriteria } from '../../types';
+import type { LineSearchCriteria, AddressSearchCriteria, IntersectionSearchCriteria } from '../../types';
 
 interface AdvancedSearchProps {
     onLineSearch: (criteria: LineSearchCriteria) => void;

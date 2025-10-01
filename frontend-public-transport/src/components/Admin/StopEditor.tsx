@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { updateStop, fetchStop } from '../../services/api';
-import { Stop } from '../../types';
+import type { Stop } from '../../types';
 
 interface StopEditorProps {
     stopId: string;

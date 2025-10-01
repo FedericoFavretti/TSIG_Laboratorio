@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TransportNotification } from '../../types/index';
+import type { TransportNotification } from '../../types/index';
 import { transportWebSocket } from '../../services/websocket';
 import NotificationList from './NotificationList';
 

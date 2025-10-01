@@ -3,12 +3,12 @@ import TransportMap from '../components/Map/TransportMap';
 import LineFilter from '../components/User/LineFilter';
 import RealTimeInfo from '../components/User/RealTimeInfo';
 import NotificationList from '../components/Notifications/NotificationList';
-import { LineSearchCriteria } from '../types';
+import type { LineSearchCriteria } from '../types';
 import { NotificationContext } from '../App';
 
 const Home: React.FC = () => {
     const [searchResults, setSearchResults] = useState<any[]>([]);
-    const { notifications, connectionStatus, clearNotifications } = useContext(NotificationContext);
+    const { notifications} = useContext(NotificationContext);
 
     const handleSearch = (criteria: LineSearchCriteria) => {
         console.log('Búsqueda realizada:', criteria);
@@ -16,7 +16,8 @@ const Home: React.FC = () => {
         // Por ahora simulamos resultados
         setSearchResults([
             { id: '1', code: '104', destination: 'Aduana', company: 'CUCTSA' },
-            { id: '2', code: '105', destination: 'Paso Carrasco', company: 'CUCTSA' }
+            { id: '2', code: '105', destination: 'Paso Carrasco', company: 'CUCTSA' },
+            { id: '3', code: '200', destination: 'Centro', company: 'COETC' }
         ]);
     };
 
@@ -35,8 +36,7 @@ const Home: React.FC = () => {
                 }}>
                     <LineFilter onSearch={handleSearch} />
                     <RealTimeInfo />
-                    <NotificationList />
-                    
+                    <NotificationList notifications={notifications}/>
                     {/* Mostrar resultados de búsqueda */}
                     {searchResults.length > 0 && (
                         <div style={{ marginTop: '1rem' }}>

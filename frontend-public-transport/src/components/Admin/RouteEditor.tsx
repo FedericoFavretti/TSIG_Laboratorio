@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { updateRoute, fetchRoutes } from '../../services/api';
-import { Route } from '../../types/index';
+import type { Route } from '../../types/index';
 
 const RouteEditor = () => {
     const [routes, setRoutes] = useState<Route[]>([]);

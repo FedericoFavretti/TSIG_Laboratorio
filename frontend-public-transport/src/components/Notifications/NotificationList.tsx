@@ -1,5 +1,5 @@
 import React from 'react';
-import { TransportNotification } from '../../types/index';
+import type { TransportNotification } from '../../types/index';
 
 interface NotificationListProps {
   notifications: TransportNotification[];

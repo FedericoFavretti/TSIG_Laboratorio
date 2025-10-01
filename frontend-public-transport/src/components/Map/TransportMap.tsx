@@ -12,7 +12,7 @@ import LineString from 'ol/geom/LineString';
 import { Icon, Style, Stroke, Fill, Circle } from 'ol/style';
 import Overlay from 'ol/Overlay';
 import { fetchTransportData } from '../../services/api';
-import { MapFilters, Stop, Line, Coordinate } from '../../types';
+import type { MapFilters, Stop, Line, Coordinate } from '../../types';
 import 'ol/ol.css';
 
 interface TransportMapProps {

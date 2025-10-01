@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchSchedules, updateSchedule } from '../../services/api';
-import { Schedule } from '../../types/index'; // Importa el tipo
+import type { Schedule } from '../../types/index'; // Importa el tipo
 
 const ScheduleEditor = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);

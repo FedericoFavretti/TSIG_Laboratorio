@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TransportMap from './TransportMap';
 import SearchPanel from '../User/SearchPanel';
-import { MapFilters } from '../../types';
+import type { MapFilters } from '../../types';
 
 const UserMap: React.FC = () => {
     const [filters, setFilters] = useState<MapFilters>({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapFilters } from '../../types';
+import type { MapFilters } from '../../types';
 
 interface FilterPanelProps {
     filters: MapFilters;

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/AdminDashboard';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Header from './components/common/Header';
-import { transportWebSocket, TransportNotification } from './services/websocket';
+import { transportWebSocket } from './services/websocket';
+import type { TransportNotification } from './types/index';
 
 // Crear un contexto para las notificaciones (opcional pero recomendado)
 export const NotificationContext = React.createContext<{
@@ -86,11 +87,11 @@ const App: React.FC = () => {
           connectionStatus={connectionStatus}
           onClearNotifications={clearNotifications}
         />
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/admin" component={AdminDashboard} />
-          <Route component={NotFound} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route element={<NotFound/>} />
+        </Routes>
         
         {/* Componente de notificaciones toast (opcional) */}
         <GlobalNotificationHandler />

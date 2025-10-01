@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRealTimeData} from '../../services/api';
-import { RealTimeData, RealTimeVehicle } from '../../types';
+import type { RealTimeData, RealTimeVehicle } from '../../types';
 
 const RealTimeInfo: React.FC = () => {
     const [realTimeData, setRealTimeData] = useState<RealTimeData | null>(null);

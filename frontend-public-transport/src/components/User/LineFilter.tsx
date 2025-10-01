@@ -1,6 +1,6 @@
 // components/User/LineFilter.tsx
 import React, { useState } from 'react';
-import { LineSearchCriteria } from '../../types/index';
+import type { LineSearchCriteria } from '../../types/index';
 
 interface LineFilterProps {
   onSearch: (criteria: LineSearchCriteria) => void;
