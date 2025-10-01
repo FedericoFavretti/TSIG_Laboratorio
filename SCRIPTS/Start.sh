@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Configurar para compatibilidad con Node.js 18+
+export NODE_OPTIONS="--openssl-legacy-provider"
+
 # SCRIPTS/start.sh
 echo "🚀 Iniciando Sistema de Transporte Público..."
 
@@ -47,14 +50,16 @@ if [ "$START_BACKEND" = true ]; then
     done
 fi
 
-# Iniciar frontend
+# ... resto del código igual
 echo "🎨 Iniciando frontend..."
 cd ../public-transport-frontend
 
-if check_port $FRONTEND_PORT; then
+# Verificar si el puerto está en uso
+if netstat -tuln | grep ":$FRONTEND_PORT " > /dev/null; then
     echo "⚠️  Frontend ya está ejecutándose en puerto $FRONTEND_PORT"
 else
-    npm start > ../SCRIPTS/logs/frontend.log 2>&1 &
+    # Iniciar con la variable de entorno
+    NODE_OPTIONS="--openssl-legacy-provider" npm start > ../SCRIPTS/logs/frontend.log 2>&1 &
     echo $! > ../SCRIPTS/pids/frontend.pid
     echo "✅ Frontend iniciado (PID: $!)"
     echo "🌐 URL: http://localhost:$FRONTEND_PORT"
