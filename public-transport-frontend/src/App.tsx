@@ -1,21 +1,113 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AdminDashboard from './pages/AdminDashboard';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Header from './components/common/Header';
+import { transportWebSocket, TransportNotification } from './services/websocket';
+
+// Crear un contexto para las notificaciones (opcional pero recomendado)
+export const NotificationContext = React.createContext<{
+  notifications: TransportNotification[];
+  connectionStatus: string;
+}>({
+  notifications: [],
+  connectionStatus: 'DISCONNECTED'
+});
 
 const App: React.FC = () => {
+  const [notifications, setNotifications] = useState<TransportNotification[]>([]);
+  const [connectionStatus, setConnectionStatus] = useState<string>('DISCONNECTED');
+
+  useEffect(() => {
+    const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001/ws';
+    
+    const handleWebSocketMessage = (message: TransportNotification) => {
+      console.log('Nueva notificación recibida:', message);
+      setNotifications(prev => [message, ...prev.slice(0, 19)]); // Mantener últimas 20
+      
+      // Mostrar notificación toast si es crítica
+      if (message.type === 'stop_disabled' || message.type === 'route_change') {
+        showToastNotification(message);
+      }
+    };
+
+    // Conectar WebSocket
+    transportWebSocket.connect(WS_URL, handleWebSocketMessage);
+    
+    // Verificar estado de conexión periódicamente
+    const connectionCheck = setInterval(() => {
+      setConnectionStatus(transportWebSocket.getConnectionState());
+    }, 5000);
+
+    return () => {
+      transportWebSocket.disconnect();
+      clearInterval(connectionCheck);
+    };
+  }, []);
+
+  const showToastNotification = (notification: TransportNotification) => {
+    // Aquí podrías integrar con una librería de toasts o crear una propia
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(notification.title, {
+        body: notification.message,
+        icon: '/transport-icon.png'
+      });
+    } else if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          new Notification(notification.title, {
+            body: notification.message,
+            icon: '/transport-icon.png'
+          });
+        }
+      });
+    }
+    
+    // También mostrar en consola para desarrollo
+    console.log('Toast:', notification.title, '-', notification.message);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
   return (
-    <Router>
-      <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/admin" component={AdminDashboard} />
-        <Route component={NotFound} />
-      </Switch>
-    </Router>
+    <NotificationContext.Provider value={{ notifications, connectionStatus }}>
+      <Router>
+        <Header 
+          notificationCount={notifications.length}
+          connectionStatus={connectionStatus}
+          onClearNotifications={clearNotifications}
+        />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/admin" component={AdminDashboard} />
+          <Route component={NotFound} />
+        </Switch>
+        
+        {/* Componente de notificaciones toast (opcional) */}
+        <GlobalNotificationHandler />
+      </Router>
+    </NotificationContext.Provider>
   );
+};
+
+// Componente para manejar notificaciones globales
+const GlobalNotificationHandler: React.FC = () => {
+  const { notifications } = React.useContext(NotificationContext);
+
+  useEffect(() => {
+    // Aquí podrías integrar con un sistema de toasts visual
+    notifications.forEach(notification => {
+      if (notification.type === 'route_change') {
+        // Lógica específica para cambios de ruta
+        console.warn('Cambio de ruta detectado:', notification);
+      }
+    });
+  }, [notifications]);
+
+  return null; // Este componente no renderiza nada visible
 };
 
 export default App;

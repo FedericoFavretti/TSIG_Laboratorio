@@ -1,34 +1,84 @@
+// components/User/LineFilter.tsx
 import React, { useState } from 'react';
+import { LineSearchCriteria } from '../../types/index';
 
-const LineFilter: React.FC<{ lines: string[]; onFilterChange: (filteredLines: string[]) => void }> = ({ lines, onFilterChange }) => {
-    const [selectedLines, setSelectedLines] = useState<string[]>([]);
+interface LineFilterProps {
+  onSearch: (criteria: LineSearchCriteria) => void;
+}
 
-    const handleLineChange = (line: string) => {
-        const updatedLines = selectedLines.includes(line)
-            ? selectedLines.filter(selectedLine => selectedLine !== line)
-            : [...selectedLines, line];
+const LineFilter: React.FC<LineFilterProps> = ({ onSearch }) => {
+  const [searchType, setSearchType] = useState<'code' | 'company'>('code');
+  const [code, setCode] = useState('');
+  const [destination, setDestination] = useState('');
+  const [company, setCompany] = useState('');
 
-        setSelectedLines(updatedLines);
-        onFilterChange(updatedLines);
-    };
+  const handleSearch = () => {
+    if (searchType === 'code') {
+      onSearch({
+        type: 'code',
+        code,
+        destination: destination || undefined
+      });
+    } else {
+      onSearch({
+        type: 'company',
+        company
+      });
+    }
+  };
 
-    return (
-        <div>
-            <h3>Filter Lines</h3>
-            {lines.map(line => (
-                <div key={line}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={selectedLines.includes(line)}
-                            onChange={() => handleLineChange(line)}
-                        />
-                        {line}
-                    </label>
-                </div>
-            ))}
+  return (
+    <div className="line-filter">
+      <div className="search-type">
+        <label>
+          <input
+            type="radio"
+            value="code"
+            checked={searchType === 'code'}
+            onChange={() => setSearchType('code')}
+          />
+          Buscar por código
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="company"
+            checked={searchType === 'company'}
+            onChange={() => setSearchType('company')}
+          />
+          Buscar por empresa
+        </label>
+      </div>
+
+      {searchType === 'code' ? (
+        <div className="code-search">
+          <input
+            type="text"
+            placeholder="Código de línea (ej: 104)"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Destino (opcional)"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+          />
         </div>
-    );
+      ) : (
+        <div className="company-search">
+          <input
+            type="text"
+            placeholder="Empresa (ej: CUCTSA)"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+          />
+        </div>
+      )}
+
+      <button onClick={handleSearch}>Buscar</button>
+    </div>
+  );
 };
 
 export default LineFilter;

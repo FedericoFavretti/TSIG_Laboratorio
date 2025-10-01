@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { fetchSchedules, updateSchedule } from '../../services/api';
+import { Schedule } from '../../types/index'; // Importa el tipo
 
 const ScheduleEditor = () => {
-    const [schedules, setSchedules] = useState([]);
-    const [selectedSchedule, setSelectedSchedule] = useState(null);
-    const [newScheduleData, setNewScheduleData] = useState({});
+    const [schedules, setSchedules] = useState<Schedule[]>([]);
+    const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+    const [newScheduleData, setNewScheduleData] = useState<Partial<Schedule> & { id?: string }>({});
 
     useEffect(() => {
         const loadSchedules = async () => {
@@ -14,30 +15,35 @@ const ScheduleEditor = () => {
         loadSchedules();
     }, []);
 
-    const handleSelectSchedule = (schedule) => {
+    const handleSelectSchedule = (schedule: Schedule) => {
         setSelectedSchedule(schedule);
         setNewScheduleData(schedule);
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setNewScheduleData({ ...newScheduleData, [name]: value });
+        setNewScheduleData({ 
+            ...newScheduleData, 
+            [name]: value 
+        });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await updateSchedule(newScheduleData);
-        const updatedSchedules = await fetchSchedules();
-        setSchedules(updatedSchedules);
-        setSelectedSchedule(null);
-        setNewScheduleData({});
+        if (newScheduleData.id) {
+            await updateSchedule(newScheduleData.id, newScheduleData);
+            const updatedSchedules = await fetchSchedules();
+            setSchedules(updatedSchedules);
+            setSelectedSchedule(null);
+            setNewScheduleData({});
+        }
     };
 
     return (
         <div>
             <h2>Schedule Editor</h2>
             <ul>
-                {schedules.map((schedule) => (
+                {schedules.map((schedule: Schedule) => (
                     <li key={schedule.id} onClick={() => handleSelectSchedule(schedule)}>
                         {schedule.line} - {schedule.time}
                     </li>
@@ -51,7 +57,7 @@ const ScheduleEditor = () => {
                         <input
                             type="text"
                             name="line"
-                            value={newScheduleData.line}
+                            value={newScheduleData.line || ''}
                             onChange={handleChange}
                         />
                     </label>
@@ -60,7 +66,7 @@ const ScheduleEditor = () => {
                         <input
                             type="text"
                             name="time"
-                            value={newScheduleData.time}
+                            value={newScheduleData.time || ''}
                             onChange={handleChange}
                         />
                     </label>

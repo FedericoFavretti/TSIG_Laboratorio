@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { updateRoute, fetchRoutes } from '../../services/api';
+import { Route } from '../../types/index';
 
 const RouteEditor = () => {
-    const [routes, setRoutes] = useState([]);
-    const [selectedRoute, setSelectedRoute] = useState(null);
-    const [routeName, setRouteName] = useState('');
-    const [routeDetails, setRouteDetails] = useState('');
+    const [routes, setRoutes] = useState<Route[]>([]);
+    const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
+    const [routeName, setRouteName] = useState<string>('');
+    const [routeDetails, setRouteDetails] = useState<string>('');
 
     useEffect(() => {
         const loadRoutes = async () => {
@@ -15,16 +16,19 @@ const RouteEditor = () => {
         loadRoutes();
     }, []);
 
-    const handleSelectRoute = (route) => {
+    const handleSelectRoute = (route: Route) => {
         setSelectedRoute(route);
         setRouteName(route.name);
         setRouteDetails(route.details);
     };
 
-    const handleUpdateRoute = async (e) => {
+    const handleUpdateRoute = async (e: React.FormEvent) => {
         e.preventDefault();
         if (selectedRoute) {
-            await updateRoute(selectedRoute.id, { name: routeName, details: routeDetails });
+            await updateRoute(selectedRoute.id, { 
+                name: routeName, 
+                details: routeDetails 
+            });
             alert('Route updated successfully!');
             setSelectedRoute(null);
             setRouteName('');
@@ -37,14 +41,20 @@ const RouteEditor = () => {
     return (
         <div>
             <h2>Route Editor</h2>
-            <select onChange={(e) => handleSelectRoute(JSON.parse(e.target.value))}>
+            <select 
+                onChange={(e) => {
+                    const selected = JSON.parse(e.target.value);
+                    handleSelectRoute(selected);
+                }}
+            >
                 <option value="">Select a route</option>
-                {routes.map((route) => (
+                {routes.map((route: Route) => (
                     <option key={route.id} value={JSON.stringify(route)}>
                         {route.name}
                     </option>
                 ))}
             </select>
+            
             {selectedRoute && (
                 <form onSubmit={handleUpdateRoute}>
                     <div>

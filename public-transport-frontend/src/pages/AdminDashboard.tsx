@@ -1,28 +1,23 @@
-import React from 'react';
-import RouteEditor from '../components/Admin/RouteEditor';
-import StopEditor from '../components/Admin/StopEditor';
-import ScheduleEditor from '../components/Admin/ScheduleEditor';
-import Header from '../components/common/Header';
-
+// pages/AdminDashboard.tsx - Rediseñada
 const AdminDashboard: React.FC = () => {
-    return (
-        <div>
-            <Header />
-            <h1>Admin Dashboard</h1>
-            <div>
-                <h2>Edit Routes</h2>
-                <RouteEditor />
-            </div>
-            <div>
-                <h2>Edit Stops</h2>
-                <StopEditor />
-            </div>
-            <div>
-                <h2>Edit Schedules</h2>
-                <ScheduleEditor />
-            </div>
-        </div>
-    );
+  const [activeTab, setActiveTab] = useState<'map' | 'lines' | 'stops' | 'schedules'>('map');
+  
+  return (
+    <div className="admin-dashboard">
+      <nav className="admin-nav">
+        <button onClick={() => setActiveTab('map')}>Mapa Principal</button>
+        <button onClick={() => setActiveTab('lines')}>Gestión de Líneas</button>
+        <button onClick={() => setActiveTab('stops')}>Gestión de Paradas</button>
+        <button onClick={() => setActiveTab('schedules')}>Gestión de Horarios</button>
+      </nav>
+      
+      <div className="admin-content">
+        {activeTab === 'map' && <AdminMap />}
+        {activeTab === 'lines' && <LineManagement />}
+        {activeTab === 'stops' && <StopManagement />}
+        {activeTab === 'schedules' && <ScheduleManagement />}
+      </div>
+    </div>
+  );
 };
-
 export default AdminDashboard;
