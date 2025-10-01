@@ -8,26 +8,16 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { Icon, Style } from 'ol/style';
+import { Icon, Style, Stroke, Fill } from 'ol/style';
 import Overlay from 'ol/Overlay';
 import { fetchTransportData } from '../../services/api';
 import 'ol/ol.css';
 
-// Define el tipo para los datos del transporte
-interface TransportData {
-  stops: Stop[];
-  routes?: any[];
+interface TransportMapProps {
+    searchResults?: any[];
 }
 
-interface Stop {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  routes?: string[];
-}
-
-const TransportMap: React.FC = () => {
+const TransportMap: React.FC<TransportMapProps> = ({ searchResults = [] }) => {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<Map | null>(null);
@@ -36,22 +26,32 @@ const TransportMap: React.FC = () => {
         let map: Map;
 
         const loadMap = async () => {
-            const data: TransportData = await fetchTransportData();
+            const data = await fetchTransportData();
             const stops = data.stops || [];
 
             // Crear features para los stops
-            const features = stops.map((stop: Stop) => {
+            const stopFeatures = stops.map((stop: any) => {
                 const feature = new Feature({
                     geometry: new Point(fromLonLat([stop.longitude, stop.latitude])),
                     name: stop.name,
-                    routes: stop.routes || [],
+                    routes: stop.routes,
+                    type: 'stop'
                 });
+                
+                // Estilo diferente para stops en resultados de búsqueda
+                const isInSearchResults = searchResults.some(result => 
+                    stop.routes?.includes(result.code)
+                );
+                
                 feature.setStyle(
                     new Style({
                         image: new Icon({
-                            src: 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/examples/data/icon.png',
+                            src: isInSearchResults 
+                                ? 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/examples/data/dot.png' 
+                                : 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/examples/data/icon.png',
                             anchor: [0.5, 1],
-                            scale: 0.05,
+                            scale: isInSearchResults ? 0.8 : 0.05,
+                            color: isInSearchResults ? '#FF0000' : '#0000FF'
                         }),
                     })
                 );
@@ -59,7 +59,7 @@ const TransportMap: React.FC = () => {
             });
 
             const vectorSource = new VectorSource({
-                features: features,
+                features: stopFeatures,
             });
 
             const vectorLayer = new VectorLayer({
@@ -75,17 +75,17 @@ const TransportMap: React.FC = () => {
                     vectorLayer,
                 ],
                 view: new View({
-                    center: fromLonLat([-56.1645, -34.9011]), // Coordenadas de Montevideo
+                    center: fromLonLat([-56.1645, -34.9011]), // Montevideo
                     zoom: 13,
                 }),
             });
 
-            // Popup overlay - CORREGIDO
+            // Popup overlay
             const overlay = new Overlay({
                 element: overlayRef.current as HTMLDivElement,
                 autoPan: {
                     animation: {
-                        duration: 250, // Mover la animación aquí
+                        duration: 250,
                     },
                 },
             });
@@ -104,7 +104,8 @@ const TransportMap: React.FC = () => {
                         if (overlayRef.current) {
                             overlayRef.current.innerHTML = `
                                 <strong>${feature.get('name')}</strong><br/>
-                                Routes: ${(feature.get('routes') || []).join(', ')}
+                                Routes: ${(feature.get('routes') || []).join(', ')}<br/>
+                                Type: ${feature.get('type')}
                             `;
                             overlayRef.current.style.display = 'block';
                         }
@@ -136,10 +137,10 @@ const TransportMap: React.FC = () => {
                 mapInstance.current.setTarget(undefined);
             }
         };
-    }, []);
+    }, [searchResults]); // Re-ejecutar cuando cambien los resultados de búsqueda
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
             <div
                 ref={overlayRef}
@@ -151,7 +152,7 @@ const TransportMap: React.FC = () => {
                     minWidth: 120,
                     position: 'absolute',
                     display: 'none',
-                    pointerEvents: 'none', // Cambiado a 'none' para evitar interferencias
+                    pointerEvents: 'none',
                     fontSize: '14px',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                 }}

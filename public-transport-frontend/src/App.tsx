@@ -10,9 +10,11 @@ import { transportWebSocket, TransportNotification } from './services/websocket'
 export const NotificationContext = React.createContext<{
   notifications: TransportNotification[];
   connectionStatus: string;
+  clearNotifications: () => void; // Agregar esta línea
 }>({
   notifications: [],
-  connectionStatus: 'DISCONNECTED'
+  connectionStatus: 'DISCONNECTED',
+  clearNotifications: () => {} // Agregar esta línea
 });
 
 const App: React.FC = () => {
@@ -73,7 +75,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <NotificationContext.Provider value={{ notifications, connectionStatus }}>
+    <NotificationContext.Provider value={{ 
+      notifications, 
+      connectionStatus, 
+      clearNotifications 
+    }}>
       <Router>
         <Header 
           notificationCount={notifications.length}

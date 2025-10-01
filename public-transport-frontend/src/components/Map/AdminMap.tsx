@@ -32,3 +32,4 @@ const AdminMap: React.FC = () => {
     </div>
   );
 };
+export default AdminMap;
