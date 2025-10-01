@@ -19,14 +19,17 @@ export interface TimeRange {
 }
 
 export interface Stop {
-  id: string;
-  name: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-  address?: string;
-  isActive: boolean;
+    id: string;
+    name: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
+    address?: string;
+    isActive: boolean;
+    // Agregar estas propiedades
+    lines?: string[]; // IDs de las líneas que pasan por esta parada
+    routes?: string[]; // Rutas asociadas (para compatibilidad)
 }
 
 export interface Schedule {
@@ -38,14 +41,21 @@ export interface Schedule {
 }
 
 export interface Line {
-  id: string;
-  code: string;
-  origin: string;
-  destination: string;
-  company: string;
-  isActive: boolean;
+    id: string;
+    code: string;
+    origin: string;
+    destination: string;
+    company: string;
+    isActive: boolean;
+    // Agregar estas propiedades
+    route?: Array<{ lat: number; lng: number }>; // Coordenadas del recorrido
+    stops?: string[]; // IDs de paradas en esta línea
 }
 
+export interface Coordinate {
+    lat: number;
+    lng: number;
+}
 // Tipos para búsquedas
 export interface LineSearchCriteria {
   type: 'code' | 'company' | 'polygon' | 'nearby';

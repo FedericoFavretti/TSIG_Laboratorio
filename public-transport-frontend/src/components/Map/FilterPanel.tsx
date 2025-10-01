@@ -1,44 +1,70 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { MapFilters } from '../../types';
 
-// Tipado de las props
 interface FilterPanelProps {
-    onFilterChange: (line: string, stop: string) => void;
+    filters: MapFilters;
+    onFiltersChange: (filters: MapFilters) => void;
 }
 
-const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange }) => {
-    const [lineFilter, setLineFilter] = useState('');
-    const [stopFilter, setStopFilter] = useState('');
-
-    const handleLineFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLineFilter(event.target.value);
-        onFilterChange(event.target.value, stopFilter);
+const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) => {
+    const handleActiveOnlyChange = (activeOnly: boolean) => {
+        onFiltersChange({ ...filters, activeOnly });
     };
 
-    const handleStopFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setStopFilter(event.target.value);
-        onFilterChange(lineFilter, event.target.value);
+    const handleShowDisabledChange = (showDisabled: boolean) => {
+        onFiltersChange({ ...filters, showDisabled });
+    };
+
+    const handleSearchRadiusChange = (radius: number) => {
+        onFiltersChange({ ...filters, searchRadius: radius });
     };
 
     return (
-        <div className="filter-panel">
-            <h3>Filter Options</h3>
-            <div>
-                <label htmlFor="line-filter">Filter by Line:</label>
-                <input
-                    type="text"
-                    id="line-filter"
-                    value={lineFilter}
-                    onChange={handleLineFilterChange}
-                />
+        <div style={{ 
+            padding: '1rem', 
+            backgroundColor: '#f8f9fa', 
+            border: '1px solid #dee2e6',
+            borderRadius: '4px',
+            marginBottom: '1rem'
+        }}>
+            <h4>Filtros</h4>
+            
+            <div style={{ marginBottom: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                        type="checkbox"
+                        checked={filters.activeOnly}
+                        onChange={(e) => handleActiveOnlyChange(e.target.checked)}
+                    />
+                    Solo elementos activos
+                </label>
             </div>
+            
+            <div style={{ marginBottom: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                        type="checkbox"
+                        checked={filters.showDisabled}
+                        onChange={(e) => handleShowDisabledChange(e.target.checked)}
+                    />
+                    Mostrar deshabilitados
+                </label>
+            </div>
+            
             <div>
-                <label htmlFor="stop-filter">Filter by Stop:</label>
-                <input
-                    type="text"
-                    id="stop-filter"
-                    value={stopFilter}
-                    onChange={handleStopFilterChange}
-                />
+                <label>
+                    Radio de búsqueda:
+                    <select 
+                        value={filters.searchRadius}
+                        onChange={(e) => handleSearchRadiusChange(Number(e.target.value))}
+                        style={{ marginLeft: '0.5rem' }}
+                    >
+                        <option value={500}>500m</option>
+                        <option value={1000}>1km</option>
+                        <option value={2000}>2km</option>
+                        <option value={5000}>5km</option>
+                    </select>
+                </label>
             </div>
         </div>
     );
