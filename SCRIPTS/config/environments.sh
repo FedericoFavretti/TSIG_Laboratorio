@@ -7,7 +7,7 @@ export FRONTEND_PORT=3000
 export BACKEND_PORT=3001
 
 # Configuración de servicios
-export START_BACKEND=false  # Cambiar a true cuando tengas backend
+export START_BACKEND=false  # Cambiar a true cuando exista backend
 export HAS_BACKEND=false
 
 # Entorno

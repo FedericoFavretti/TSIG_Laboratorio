@@ -7,19 +7,19 @@ import Header from './components/common/Header';
 import { transportWebSocket } from './services/websocket';
 import type { TransportNotification } from './types/index';
 
-// Crear un contexto para las notificaciones (opcional pero recomendado)
+// Crear un contexto para las notificaciones
 export const NotificationContext = React.createContext<{
   notifications: TransportNotification[];
   connectionStatus: string;
-  clearNotifications: () => void; // Agregar esta línea
+  clearNotifications: () => void; 
 }>({
   notifications: [],
   connectionStatus: 'DISCONNECTED',
-  clearNotifications: () => {} // Agregar esta línea
+  clearNotifications: () => {} 
 });
 
 const App: React.FC = () => {
-  const [notifications, setNotifications] = useState<TransportNotification[]>([]);
+  const [notifications, setNotifications] = useState<TransportNotification[]>([]); 
   const [connectionStatus, setConnectionStatus] = useState<string>('DISCONNECTED');
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const App: React.FC = () => {
   }, []);
 
   const showToastNotification = (notification: TransportNotification) => {
-    // Aquí podrías integrar con una librería de toasts o crear una propia
+    // Aquí podríamos integrar con una librería de toasts o crear una propia
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(notification.title, {
         body: notification.message,

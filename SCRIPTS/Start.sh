@@ -59,7 +59,7 @@ if netstat -tuln | grep ":$FRONTEND_PORT " > /dev/null; then
     echo "⚠️  Frontend ya está ejecutándose en puerto $FRONTEND_PORT"
 else
     # Iniciar con la variable de entorno
-    NODE_OPTIONS="--openssl-legacy-provider" npm start > ../SCRIPTS/logs/frontend.log 2>&1 &
+    NODE_OPTIONS="--openssl-legacy-provider" npm run dev > ../SCRIPTS/logs/frontend.log 2>&1 &
     echo $! > ../SCRIPTS/pids/frontend.pid
     echo "✅ Frontend iniciado (PID: $!)"
     echo "🌐 URL: http://localhost:$FRONTEND_PORT"

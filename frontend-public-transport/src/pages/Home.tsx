@@ -31,7 +31,7 @@ const Home: React.FC = () => {
                 <div style={{ 
                     width: '300px', 
                     padding: '1rem', 
-                    borderRight: '1px solid #ccc',
+                    borderRight: '1px solid #d48585ff',
                     overflowY: 'auto'
                 }}>
                     <LineFilter onSearch={handleSearch} />
