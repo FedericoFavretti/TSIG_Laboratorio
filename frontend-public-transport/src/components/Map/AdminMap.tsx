@@ -68,8 +68,8 @@ const AdminMap: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: '1rem' }}>
-            <h2>Mapa de Administración</h2>
+        <div style={{ padding: '1rem', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <h2 style={{color: '#333'}}>Mapa de Administración</h2>
             
             {/* Barra de herramientas */}
             <div style={{ 
@@ -79,10 +79,10 @@ const AdminMap: React.FC = () => {
                 borderRadius: '4px',
                 border: '1px solid #ddd'
             }}>
-                <h3>Herramientas de Administración</h3>
+                <h3 style={{color: '#333'}}>Herramientas de Administración</h3>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <button 
-                        onClick={() => setSelectedTool('stop')}
+                        onClick={() => setSelectedTool('stop')} 
                         style={{ 
                             padding: '0.5rem 1rem',
                             backgroundColor: selectedTool === 'stop' ? '#28a745' : '#6c757d',
@@ -127,12 +127,12 @@ const AdminMap: React.FC = () => {
                 
                 {selectedTool && (
                     <div style={{ marginTop: '0.5rem', padding: '0.5rem', backgroundColor: '#e9ecef', borderRadius: '4px' }}>
-                        <p style={{ margin: 0 }}>
+                        <p style={{ margin: 0, color: '#333' }}>
                             <strong>Modo: {selectedTool === 'stop' ? 'Agregar Parada' : 'Dibujar Línea'}</strong> - 
                             Haz clic en el mapa para {selectedTool === 'stop' ? 'colocar una parada' : 'agregar puntos a la línea'}
                         </p>
                         {selectedTool === 'line' && draftLine.length > 0 && (
-                            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>
+                            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: '#333' }}>
                                 Puntos agregados: {draftLine.length}. Haz clic para agregar más puntos o finaliza con el diálogo.
                             </p>
                         )}
@@ -162,8 +162,8 @@ const AdminMap: React.FC = () => {
                 borderRadius: '4px',
                 border: '1px solid #b3d9ff'
             }}>
-                <h4>Instrucciones para Administradores:</h4>
-                <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+                <h4 style={{color: '#333'}}>Instrucciones para Administradores:</h4>
+                <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#333' }}>
                     <li><strong>Agregar Parada:</strong> Selecciona la herramienta y haz clic en el mapa. Ingresa nombre y dirección.</li>
                     <li><strong>Dibujar Línea:</strong> Selecciona la herramienta y haz clic para agregar puntos. Finaliza con el diálogo.</li>
                     <li><strong>Las paradas</strong> se asocian automáticamente con líneas que pasen a menos de 10 metros.</li>

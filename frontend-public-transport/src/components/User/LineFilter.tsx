@@ -28,6 +28,7 @@ const LineFilter: React.FC<LineFilterProps> = ({ onSearch }) => {
   };
 
   return (
+    // ELIJE SI SELECCIONA POR CODIGO O COMPANIA Y MUESTRA LOS INPUTS CORRESPONDIENTES
     <div className="line-filter">
       <div className="search-type">
         <label>

@@ -7,14 +7,14 @@ import type { LineSearchCriteria } from '../types';
 import { NotificationContext } from '../App';
 
 const Home: React.FC = () => {
-    const [searchResults, setSearchResults] = useState<any[]>([]);
-    const { notifications} = useContext(NotificationContext);
+    const [searchResults, setSearchResults] = useState<any[]>([]);// Estado para almacenar los resultados de búsqueda
+    const { notifications} = useContext(NotificationContext);// Usamos el contexto para obtener las notificaciones
 
-    const handleSearch = (criteria: LineSearchCriteria) => {
+    const handleSearch = (criteria: LineSearchCriteria) => {//handleSearch deberia realizar la busqueda en la API
         console.log('Búsqueda realizada:', criteria);
         // Aquí implementarías la lógica real de búsqueda
         // Por ahora simulamos resultados
-        setSearchResults([
+        setSearchResults([// Ingresamos datos de ejemplo
             { id: '1', code: '104', destination: 'Aduana', company: 'CUCTSA' },
             { id: '2', code: '105', destination: 'Paso Carrasco', company: 'CUCTSA' },
             { id: '3', code: '200', destination: 'Centro', company: 'COETC' }
@@ -22,17 +22,18 @@ const Home: React.FC = () => {
     };
 
     const handleClearSearch = () => {
-        setSearchResults([]);
+        setSearchResults([]);// Limpiamos los resultados de búsqueda
     };
 
     return (
         <div>
-            <div style={{ display: 'flex', height: 'calc(100vh - 80px)' }}>
+            <div style={{ display: 'flex', height: 'calc(100vh - 80px)', width: '100%' }}>
                 <div style={{ 
                     width: '300px', 
                     padding: '1rem', 
-                    borderRight: '1px solid #d48585ff',
-                    overflowY: 'auto'
+                    borderRight: '1px solid #686868ff',
+                    overflowY: 'auto',
+                    backgroundColor: '#ccccccff'
                 }}>
                     <LineFilter onSearch={handleSearch} />
                     <RealTimeInfo />
@@ -50,7 +51,7 @@ const Home: React.FC = () => {
                             {searchResults.map(result => (
                                 <div key={result.id} style={{ 
                                     padding: '0.5rem', 
-                                    border: '1px solid #ddd', 
+                                    border: '1px solid #7a7a7aff', 
                                     marginBottom: '0.5rem',
                                     borderRadius: '4px'
                                 }}>
@@ -62,7 +63,10 @@ const Home: React.FC = () => {
                         </div>
                     )}
                 </div>
-                <div style={{ flex: 1 }}>
+                <div style={{ 
+                    flex: 1,
+                    backgroundColor: '#e6b8b7ff'
+                }}>
                     <TransportMap searchResults={searchResults} />
                 </div>
             </div>

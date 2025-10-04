@@ -73,7 +73,7 @@ const RealTimeInfo: React.FC = () => {
             border: '1px solid #dee2e6',
             borderRadius: '4px'
         }}>
-            <h3 style={{ marginTop: 0, marginBottom: '1rem' }}>🚍 Información en Tiempo Real</h3>
+            <h3 style={{ marginTop: 0, marginBottom: '1rem', color: "black" }}>🚍 Información en Tiempo Real</h3>
             
             {realTimeData && (
                 <>
@@ -86,7 +86,7 @@ const RealTimeInfo: React.FC = () => {
                         backgroundColor: '#e9ecef',
                         borderRadius: '4px'
                     }}>
-                        <div>
+                        <div style={{ fontSize: '0.9rem', color: '#495057' }}>
                             <strong>Vehículos activos:</strong> {realTimeData.totalActive}
                         </div>
                         <div style={{ fontSize: '0.8rem', color: '#6c757d' }}>
