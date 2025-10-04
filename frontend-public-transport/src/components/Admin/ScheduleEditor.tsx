@@ -51,7 +51,7 @@ const ScheduleEditor = () => {
             </ul>
             {selectedSchedule && (
                 <form onSubmit={handleSubmit}>
-                    <h3>Edit Schedule</h3>
+                    <h3>Editor de Horarios</h3>
                     <label>
                         Line:
                         <input
