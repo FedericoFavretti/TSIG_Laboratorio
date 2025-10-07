@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
+import VectorLayer from 'ol/layer/Vector';
 import OSM from 'ol/source/OSM';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -34,15 +34,15 @@ const TransportMap: React.FC<TransportMapProps> = ({
     showUserControls = false,
     interactive = true
 }) => {
-    const mapRef = useRef<HTMLDivElement>(null);
-    const overlayRef = useRef<HTMLDivElement>(null);
-    const mapInstance = useRef<Map | null>(null);
+    const mapRef = useRef<HTMLDivElement>(null);//div donde se dibuja
+    const overlayRef = useRef<HTMLDivElement>(null);//div para el popup(info sobre el punto)
+    const mapInstance = useRef<Map | null>(null);//guardo instancia real de OL para limpiar o actualizar
     const [mapData, setMapData] = useState<{ stops: Stop[]; lines: Line[] }>({ stops: [], lines: [] });
 
-    useEffect(() => {
+    useEffect(() => {//se ejecuta al llamar el componente con <TransportMap /> en el home
         // Guardar referencias en variables locales para el closure
-        const currentMapRef = mapRef.current;
-        const currentOverlayRef = overlayRef.current;
+        const currentMapRef = mapRef.current;//referencia al div del mapa
+        const currentOverlayRef = overlayRef.current;//referencia al div del popup
 
         // Verificar que las referencias no sean nulas
         if (!currentMapRef || !currentOverlayRef) {
@@ -50,11 +50,12 @@ const TransportMap: React.FC<TransportMapProps> = ({
             return;
         }
 
-        let map: Map;
+        let map: Map;//variable local para la instancia del mapa
 
-        const loadMap = async () => {
+        const loadMap = async () => {//funcion para cargar el mapa
             try {
-                const data = await fetchTransportData();
+                const data = await fetchTransportData();//obtengo datos de la api
+                // Actualizar el estado con los datos obtenidos
                 setMapData({
                     stops: data.stops || [],
                     lines: data.lines || []
@@ -62,6 +63,7 @@ const TransportMap: React.FC<TransportMapProps> = ({
 
                 // Crear features para los stops
                 const stopFeatures = (data.stops || []).map((stop: any) => {
+                    // Crear un feature para cada parada
                     const feature = new Feature({
                         geometry: new Point(fromLonLat([stop.location.longitude, stop.location.latitude])),
                         name: stop.name,
@@ -70,57 +72,61 @@ const TransportMap: React.FC<TransportMapProps> = ({
                         isActive: stop.isActive,
                         id: stop.id
                     });
-                    
+                    // Establecer un estilo para la parada
                     feature.setStyle(
                         new Style({
                             image: new Icon({
-                                src: 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/examples/data/icon.png',
-                                anchor: [0.5, 1],
-                                scale: 0.05,
+                                src: 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/examples/data/icon.png',//icono de la parada
+                                anchor: [0.5, 1],//ancla en la base del icono
+                                scale: 0.05,//escala del icono
                             }),
                         })
                     );
-                    return feature;
+                    return feature;//retorno el feature creado
                 });
 
+                // Crear features para los draftPoints (líneas en edición)
                 const vectorSource = new VectorSource({
                     features: stopFeatures,
                 });
 
+                // Si hay puntos en draftPoints, crear una línea temporal
                 const vectorLayer = new VectorLayer({
                     source: vectorSource,
                 });
 
-                // Usar las referencias locales (TypeScript sabe que no son null aquí)
+                // Usar las referencias locales
                 map = new Map({
-                    target: currentMapRef,
-                    layers: [
+                    target: currentMapRef,//div donde se renderiza
+                    layers: [//capa base
                         new TileLayer({
-                            source: new OSM(),
+                            source: new OSM(),//OpenStreetMap como capa base
                         }),
-                        vectorLayer,
+                        vectorLayer,//capa de paradas
                     ],
-                    view: new View({
-                        center: fromLonLat([-56.1645, -34.9011]),
+                    view: new View({//vista inicial
+                        center: fromLonLat([-56.1645, -34.9011]),//centro en Montevideo
                         zoom: 13,
                     }),
                 });
 
                 // Popup overlay - usar referencia local
                 const overlay = new Overlay({
-                    element: currentOverlayRef,
-                    autoPan: {
+                    element: currentOverlayRef,//div del popup
+                    autoPan: {//panear si el popup se sale de la vista
                         animation: {
                             duration: 250,
                         },
                     },
                 });
-                map.addOverlay(overlay);
+                map.addOverlay(overlay);//agregar overlay al mapa
 
+                // Manejar clics en el mapa
                 map.on('singleclick', function (evt) {
-                    const coordinates = map.getCoordinateFromPixel(evt.pixel);
-                    const lonLat = toLonLat(coordinates);
-                    
+                    const coordinates = map.getCoordinateFromPixel(evt.pixel);//coordenadas del clic
+                    const lonLat = toLonLat(coordinates);//convertir a lonLat
+
+                    // Si es admin y hay función para manejar clics y el mapa es interactivo
                     if (isAdmin && onMapClick && interactive) {
                         onMapClick({
                             lat: lonLat[1],

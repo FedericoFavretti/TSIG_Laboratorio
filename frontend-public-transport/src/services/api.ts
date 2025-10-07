@@ -12,7 +12,7 @@ import type {
 } from '../types';
 
 
-const API_BASE_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3001/api'; 
+const API_BASE_URL = import.meta.env.VITE_WS_URL || 'http://localhost:8080/transport-backend/api'; //url base del backend donde esta el tomcat con la api
 
 // services/api.ts
 export const lineAPI = { 
@@ -82,7 +82,7 @@ export const updateSchedule = async (scheduleId: string, scheduleData: Partial<S
 };
 
 export async function fetchTransportData() {//fetchTransportData obtiene datos de transporte desde un endpoint específico
-    const response = await fetch('http://localhost:8080/api/transport');
+    const response = await fetch(`${API_BASE_URL}/transport`);
     return response.json();
 }
 

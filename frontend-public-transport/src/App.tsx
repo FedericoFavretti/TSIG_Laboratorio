@@ -12,10 +12,12 @@ export const NotificationContext = React.createContext<{
   notifications: TransportNotification[];
   connectionStatus: string;
   clearNotifications: () => void; 
+  sendWebSocketMessage: (message: any) => void;
 }>({
   notifications: [],
   connectionStatus: 'DISCONNECTED',
-  clearNotifications: () => {} 
+  clearNotifications: () => {},
+  sendWebSocketMessage: () => {}
 });
 
 const App: React.FC = () => {
@@ -23,16 +25,35 @@ const App: React.FC = () => {
   const [connectionStatus, setConnectionStatus] = useState<string>('DISCONNECTED');
 
   useEffect(() => {
-    const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001/ws';
+    // ✅ URL CORRECTA - Verifica que coincida con tu backend
+    const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080/transport-backend/ws/realtime';
     
+    console.log('🔄 Iniciando conexión WebSocket:', WS_URL);
+
     const handleWebSocketMessage = (message: TransportNotification) => {
-      console.log('Nueva notificación recibida:', message);
-      setNotifications(prev => [message, ...prev.slice(0, 19)]); // Mantener últimas 20
+      console.log('🔔 Nueva notificación WebSocket:', message);
       
-      // Mostrar notificación toast si es crítica
-      if (message.type === 'stop_disabled' || message.type === 'route_change') {
-        showToastNotification(message);
+      // Manejar diferentes tipos de mensajes
+      switch (message.type) {
+        case 'connection_established':
+          setConnectionStatus('CONNECTED');
+          break;
+        case 'vehicle_position_update':
+          // Actualizar posición de vehículos en tiempo real
+          handleVehicleUpdate(message);
+          break;
+        case 'route_updated':
+        case 'stop_updated':
+        case 'schedule_updated':
+          // Notificaciones importantes - mostrar toast
+          showToastNotification(message);
+          break;
+        default:
+          console.log('📨 Mensaje WebSocket no manejado:', message);
       }
+      
+      // Agregar a la lista de notificaciones
+      setNotifications(prev => [message, ...prev.slice(0, 19)]); // Mantener últimas 20
     };
 
     // Conectar WebSocket
@@ -40,46 +61,57 @@ const App: React.FC = () => {
     
     // Verificar estado de conexión periódicamente
     const connectionCheck = setInterval(() => {
-      setConnectionStatus(transportWebSocket.getConnectionState());
-    }, 5000);
+      const newStatus = transportWebSocket.getConnectionState();
+      setConnectionStatus(newStatus);
+      
+      if (newStatus === 'DISCONNECTED') {
+        console.warn('⚠️ WebSocket desconectado');
+      }
+    }, 3000);
 
+    // Cleanup
     return () => {
+      console.log('🧹 Limpiando WebSocket...');
       transportWebSocket.disconnect();
       clearInterval(connectionCheck);
     };
   }, []);
 
+  const handleVehicleUpdate = (message: TransportNotification) => {
+    // Aquí puedes actualizar el estado global de vehículos
+    // Por ejemplo, usando un contexto de vehículos o Redux
+    console.log('🚌 Actualización de vehículo:', message);
+  };
+
   const showToastNotification = (notification: TransportNotification) => {
-    // Aquí podríamos integrar con una librería de toasts o crear una propia
+    // Mostrar notificación en UI
+    if (import.meta.env.DEV) {
+      console.log('📢 Notificación importante:', notification);
+    }
+    
+    // Notificaciones del navegador (opcional)
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(notification.title, {
+      new Notification(notification.title || 'Sistema de Transporte', {
         body: notification.message,
         icon: '/transport-icon.png'
       });
-    } else if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          new Notification(notification.title, {
-            body: notification.message,
-            icon: '/transport-icon.png'
-          });
-        }
-      });
     }
-    
-    // También mostrar en consola para desarrollo
-    console.log('Toast:', notification.title, '-', notification.message);
   };
 
   const clearNotifications = () => {
     setNotifications([]);
   };
 
+  const sendWebSocketMessage = (message: any) => {
+    transportWebSocket.send(message);
+  };
+
   return (
     <NotificationContext.Provider value={{ 
       notifications, 
       connectionStatus, 
-      clearNotifications 
+      clearNotifications,
+      sendWebSocketMessage
     }}>
       <Router>
         <Header 
@@ -93,7 +125,7 @@ const App: React.FC = () => {
           <Route element={<NotFound/>} />
         </Routes>
         
-        {/* Componente de notificaciones toast (opcional) */}
+        {/* Componente para manejar notificaciones globales */}
         <GlobalNotificationHandler />
       </Router>
     </NotificationContext.Provider>
@@ -105,16 +137,13 @@ const GlobalNotificationHandler: React.FC = () => {
   const { notifications } = React.useContext(NotificationContext);
 
   useEffect(() => {
-    // Aquí podrías integrar con un sistema de toasts visual
+    // Aquí puedes integrar con un sistema de toasts visual
     notifications.forEach(notification => {
-      if (notification.type === 'route_change') {
-        // Lógica específica para cambios de ruta
-        console.warn('Cambio de ruta detectado:', notification);
-      }
+      // Lógica específica para diferentes tipos de notificaciones
     });
   }, [notifications]);
 
-  return null; // Este componente no renderiza nada visible
+  return null;
 };
 
 export default App;
