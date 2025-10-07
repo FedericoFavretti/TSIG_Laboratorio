@@ -2,13 +2,12 @@ package com.transport.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.websocket.*;
-import jakarta.websocket.server.ServerEndpoint;
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/ws/realtime")
 public class TransportWebSocketEndpoint {
@@ -22,7 +21,6 @@ public class TransportWebSocketEndpoint {
         System.out.println("✅ WebSocket conectado - ID: " + session.getId() + 
                          " - Total: " + sessions.size());
         
-        // Enviar mensaje de bienvenida
         sendToSession(session, createMessage("connection_established", 
             "Conectado al sistema de transporte en tiempo real"));
     }
@@ -32,9 +30,7 @@ public class TransportWebSocketEndpoint {
         try {
             System.out.println("📨 Mensaje recibido de " + session.getId() + ": " + message);
             
-            // Simular respuesta para testing
             if (message.contains("vehicle_position_update")) {
-                // Simular actualización de vehículo
                 String simulatedResponse = createMessage("vehicle_position_update", 
                     "{\"vehicleId\":\"BUS_001\",\"lineCode\":\"L1\",\"latitude\":-34.6037,\"longitude\":-58.3816,\"speed\":45.5}");
                 
@@ -58,8 +54,6 @@ public class TransportWebSocketEndpoint {
         System.err.println("💥 Error WebSocket - ID: " + session.getId() + 
                           " - Error: " + throwable.getMessage());
     }
-
-    // ========== MÉTODOS DE UTILIDAD ==========
 
     private void sendToSession(Session session, String message) {
         try {
@@ -106,8 +100,6 @@ public class TransportWebSocketEndpoint {
         }
     }
 
-    // ========== MÉTODOS PARA SIMULAR DATOS ==========
-
     public static void startSimulation() {
         Thread simulationThread = new Thread(() -> {
             try {
@@ -115,7 +107,7 @@ public class TransportWebSocketEndpoint {
                     if (!sessions.isEmpty()) {
                         simulateVehicleMovement();
                     }
-                    Thread.sleep(15000); // Cada 15 segundos
+                    Thread.sleep(15000);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

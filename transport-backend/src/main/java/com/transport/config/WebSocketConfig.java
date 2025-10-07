@@ -1,9 +1,9 @@
 package com.transport.config;
 
 import com.transport.websocket.TransportWebSocketEndpoint;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class WebSocketConfig implements ServletContextListener {
@@ -12,7 +12,6 @@ public class WebSocketConfig implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("🚀 Inicializando WebSocket para Tomcat...");
         
-        // Iniciar simulación de datos
         TransportWebSocketEndpoint.startSimulation();
         
         System.out.println("✅ WebSocket configurado en: /ws/realtime");

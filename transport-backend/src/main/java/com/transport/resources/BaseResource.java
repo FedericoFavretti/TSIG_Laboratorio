@@ -1,7 +1,7 @@
 package com.transport.resources;
 
 import com.transport.utils.DatabaseConfig;
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;

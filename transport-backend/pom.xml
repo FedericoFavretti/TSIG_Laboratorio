@@ -15,27 +15,29 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.15.2</jackson.version>
-        <jersey.version>3.1.3</jersey.version>
+        <jersey.version>2.35</jersey.version>
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
     </properties>
     
     <dependencies>
-        <!-- TUS DEPENDENCIAS ACTUALES (sin cambios) -->
+        <!-- Servlet API -->
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- JAX-RS -->
         <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
         </dependency>
         
+        <!-- Jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
@@ -60,26 +62,29 @@
             <version>${jersey.version}</version>
         </dependency>
         
-        <!-- WebSocket - versión compatible -->
-		<dependency>
-		    <groupId>jakarta.websocket</groupId>
-		    <artifactId>jakarta.websocket-api</artifactId>
-		    <version>2.1.0</version>
-		    <scope>provided</scope>
-		</dependency>
+        <!-- WebSocket - javax version -->
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
         
+        <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
         
+        <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version>
         </dependency>
         
+        <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -90,7 +95,6 @@
     <build>
         <finalName>transport-backend</finalName>
         <plugins>
-            <!-- Plugin de compilación actualizado -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -105,7 +109,6 @@
                 </configuration>
             </plugin>
             
-            <!-- Plugin WAR actualizado -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -121,7 +124,6 @@
                 </configuration>
             </plugin>
             
-            <!-- Plugin de tests actualizado -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -129,20 +131,6 @@
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
-            </plugin>
-            
-            <!-- Plugin para limpiar recursos -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.3.2</version>
-            </plugin>
-            
-            <!-- Plugin para recursos -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
             </plugin>
         </plugins>
     </build>
